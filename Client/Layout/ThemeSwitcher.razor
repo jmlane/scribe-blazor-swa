@@ -1,0 +1,38 @@
+@inject IJSRuntime JsInterop
+
+<fieldset>
+    <input type="radio" class="btn-check" name="theme" id="theme-light" autocomplete="off" value="light" @onchange="SetTheme" checked="@(theme is Theme.light)">
+    <label class="btn" for="theme-light">Light</label>
+
+    <input type="radio" class="btn-check" name="theme" id="theme-dark" autocomplete="off" value="dark" @onchange="SetTheme" checked="@(theme is Theme.dark)">
+    <label class="btn" for="theme-dark">Dark</label>
+
+    <input type="radio" class="btn-check" name="theme" id="theme-auto" autocomplete="off" value="auto" @onchange="SetTheme" checked="@(theme is Theme.auto)">
+    <label class="btn" for="theme-auto">Auto</label>
+</fieldset>
+
+@code
+{
+    enum Theme
+    {
+        auto,
+        light,
+        dark
+    }
+
+    Theme theme = Theme.auto;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var result = await JsInterop.InvokeAsync<string>("bootstrap.theme.get");
+            theme = Enum.Parse<Theme>(result);
+        }
+    }
+
+    async Task SetTheme(ChangeEventArgs eventArgs)
+    {
+        await JsInterop.InvokeVoidAsync("bootstrap.theme.set", eventArgs.Value);
+    }
+}
