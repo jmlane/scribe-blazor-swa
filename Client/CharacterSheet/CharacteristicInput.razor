@@ -1,0 +1,23 @@
+@inject ILogger<CharacteristicInput> Logger
+
+<div class="mb-3">
+    <label for="character-@Name">@Name</label>
+    <input id="character-@Name" type="number" class="form-control" @bind-value="Value" min="0" max="6" @oninput="OnInputWork" />
+</div>
+
+@code
+{
+    [Parameter]
+    public string? Name { get; set; }
+
+    [Parameter]
+    public int Value { get; set; }
+
+    [Parameter] 
+    public EventCallback<int> ValueChanged { get; set; }
+
+    private async Task OnInputWork(ChangeEventArgs eventArgs)
+    {
+        await ValueChanged.InvokeAsync(Convert.ToInt32(eventArgs.Value));
+    }
+}
