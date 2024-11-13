@@ -1,0 +1,29 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/dotnet
+{
+	"name": "Azure SWA with .NET 8.0",
+	"image": "mcr.microsoft.com/devcontainers/dotnet:8.0",
+	"features": {
+		"ghcr.io/devcontainers/features/node:1": {
+			"version": "lts/iron"
+		},
+    	"ghcr.io/jlaundry/devcontainer-features/azure-functions-core-tools:1": {}
+	},
+	"postCreateCommand": "npm install -g @azure/static-web-apps-cli",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"-dbaeumer.vscode-eslint",
+				"ms-dotnettools.csdevkit",
+				"ms-azuretools.vscode-azurestaticwebapps"
+			]
+		}
+	},
+	"portsAttributes": {
+		"4280": {
+			"label": "swa cli"
+		}
+	}
+	// "workspaceMount": "source=scribe-swa-cli,target=/workspace,type=volume",
+	// "workspaceFolder": "/workspace"
+}
