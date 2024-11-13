@@ -14,6 +14,18 @@
                 </li>
             </ul>
 
+            <div class="me-2">
+                <AuthorizeView>
+                    <Authorized>
+                        <a href="/.auth/me">@(context.User.Identity?.Name ?? "Unknown User")</a>
+                        <a href="/logout">Logout</a>
+                    </Authorized>
+                    <NotAuthorized>
+                        <a href="/login">Login</a>
+                    </NotAuthorized>
+                </AuthorizeView>
+            </div>
+
             <ThemeSwitcher/>
         </div>
     </div>
