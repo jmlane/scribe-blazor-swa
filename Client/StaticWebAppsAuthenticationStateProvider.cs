@@ -18,9 +18,9 @@ public class StaticWebAppsAuthenticationStateProvider(
             HttpClient http = new() { BaseAddress = new Uri(environment.BaseAddress) };
             AuthenticationData? data = await http.GetFromJsonAsync<AuthenticationData>("/.auth/me");
 
-            ClientPrincipal principal = data!.ClientPrincipal!;
+            ClientPrincipal? principal = data?.ClientPrincipal;
 
-            if (principal.UserRoles?.Count == 0)
+            if (principal is null || principal.UserRoles is null)
             {
                 return new(new ClaimsPrincipal());
             }
