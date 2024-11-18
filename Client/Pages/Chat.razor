@@ -1,0 +1,31 @@
+@page "/chat"
+
+@using Microsoft.AspNetCore.Components.WebAssembly.Hosting
+@using Microsoft.AspNetCore.SignalR.Client
+
+@inject ChatConfig Config
+
+<h1>Chat</h1>
+
+@foreach (var (Username, Content) in Messages)
+{
+    <p><b>@Username</b>: @Content</p>
+}
+
+
+@code
+{
+    HubConnection hubConnection;
+    List<Message> Messages = [];
+
+    protected override async Task OnInitializedAsync()
+    { 
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(Config.ChatUrl)
+            .Build();
+
+        await hubConnection.StartAsync();
+    }
+
+    record Message(string Username, string Content);
+}

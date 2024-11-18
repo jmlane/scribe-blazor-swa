@@ -45,7 +45,7 @@
     private async Task Submit()
     {
         var result = await HttpClient.PostAsJsonAsync(
-            "api/characters",
+            "characters",
             new Shared.Character
             {
                 Name = Model.Name,

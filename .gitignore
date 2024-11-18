@@ -343,3 +343,7 @@ healthchecksdb
 /test-results/
 /playwright-report/
 /playwright/.cache/
+
+# Azurite
+__azurite_*
+__blobstorage__/

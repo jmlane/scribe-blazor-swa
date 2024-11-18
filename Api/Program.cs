@@ -3,6 +3,9 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
+using Scribe.Api;
+
 using System.Text.Json;
 
 var host = new HostBuilder()
@@ -28,6 +31,8 @@ var host = new HostBuilder()
                 });
                     
         });
+
+        services.AddServerlessHub<Chat>();
     }) 
     .Build();
 

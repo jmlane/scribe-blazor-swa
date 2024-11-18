@@ -28,7 +28,7 @@ else
     {
         try
         {
-            var characters = await HttpClient.GetFromJsonAsync<IEnumerable<Shared.Character>>("/api/characters");
+            var characters = await HttpClient.GetFromJsonAsync<IEnumerable<Shared.Character>>("characters");
             if (characters is not null)
             {
                 Model.AddRange(characters.Select(x => new CharacterListing(x.Id, x.Name)));
