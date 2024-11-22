@@ -2,20 +2,27 @@
 
 @using Microsoft.AspNetCore.Components.WebAssembly.Hosting
 @using Microsoft.AspNetCore.SignalR.Client
+@using Scribe.Shared.Chat
 
 @inject ChatConfig Config
 
 <h1>Chat</h1>
+
+<form @onsubmit="OnSubmit">
+    <label>Message:</label>
+    <InputTextArea @bind-Value="textArea"></InputTextArea>
+    <button type="submit">Send</button>
+</form>
 
 @foreach (var (Username, Content) in Messages)
 {
     <p><b>@Username</b>: @Content</p>
 }
 
-
 @code
 {
-    HubConnection hubConnection;
+    string textArea = string.Empty;
+    HubConnection? hubConnection;
     List<Message> Messages = [];
 
     protected override async Task OnInitializedAsync()
@@ -24,7 +31,18 @@
             .WithUrl(Config.ChatUrl)
             .Build();
 
+        hubConnection.On<NewMessage>(nameof(IChatClient.NewMessage), message =>
+        {
+            Messages.Add(new Message(message.UserId, message.Message));
+            StateHasChanged();
+        });
+
         await hubConnection.StartAsync();
+    }
+
+    private async Task OnSubmit()
+    {
+        await hubConnection!.InvokeAsync("sendMessage", textArea);
     }
 
     record Message(string Username, string Content);
