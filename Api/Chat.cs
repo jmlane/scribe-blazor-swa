@@ -7,6 +7,7 @@ using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Azure.Functions.Worker.SignalRService;
 using Microsoft.Extensions.Logging;
 
+using Scribe.Shared;
 using Scribe.Shared.Chat;
 
 namespace Scribe.Api;
@@ -53,24 +54,6 @@ public class Chat(IServiceProvider serviceProvider, ILogger<Chat> logger) : Serv
             principal = JsonSerializer.Deserialize<ClientPrincipal>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
 
-        if (principal is null)
-        {
-            return new ClaimsPrincipal();
-        }
-
-        var identity = new ClaimsIdentity(principal.IdentityProvider);
-        identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, principal.UserId));
-        identity.AddClaim(new Claim(ClaimTypes.Name, principal.UserDetails));
-        identity.AddClaims(principal.UserRoles.Select(r => new Claim(ClaimTypes.Role, r)));
-
-        return new ClaimsPrincipal(identity);
-    }
-
-    private class ClientPrincipal
-    {
-        public string IdentityProvider { get; init; }
-        public string UserId { get; init; }
-        public string UserDetails { get; init; }
-        public IEnumerable<string> UserRoles { get; init; }
+        return principal is null ? new ClaimsPrincipal() : new ClaimsPrincipal(principal.ToClaimsIdentity());
     }
 }

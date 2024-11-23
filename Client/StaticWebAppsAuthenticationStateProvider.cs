@@ -4,6 +4,8 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
+using Scribe.Shared;
+
 namespace Scribe.Client;
 
 public class StaticWebAppsAuthenticationStateProvider(
@@ -20,17 +22,9 @@ public class StaticWebAppsAuthenticationStateProvider(
 
             ClientPrincipal? principal = data?.ClientPrincipal;
 
-            if (principal is null || principal.UserRoles is null)
-            {
-                return new(new ClaimsPrincipal());
-            }
-
-            ClaimsIdentity identity = new(principal.IdentityProvider);
-            identity.AddClaim(new(ClaimTypes.NameIdentifier, principal.UserId!));
-            identity.AddClaim(new(ClaimTypes.Name, principal.UserDetails!));
-            identity.AddClaims(principal.UserRoles!.Select(role => new Claim(ClaimTypes.Role, role)));
-
-            return new AuthenticationState(new ClaimsPrincipal(identity));
+            return principal is null
+                ? new AuthenticationState(new ClaimsPrincipal())
+                : new(new(principal.ToClaimsIdentity()));
         }
         catch (Exception ex)
         {
@@ -43,12 +37,4 @@ public class StaticWebAppsAuthenticationStateProvider(
 class AuthenticationData
 {
     public ClientPrincipal? ClientPrincipal { get; init; }
-}
-
-class ClientPrincipal
-{
-    public string? IdentityProvider { get; init; }
-    public string? UserId { get; init; }
-    public string? UserDetails { get; init;}
-    public List<string>? UserRoles { get; init; }
 }
